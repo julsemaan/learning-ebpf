@@ -55,8 +55,12 @@ b.attach_kprobe(event=syscall, fn_name="write__call")
 # b.attach_raw_tracepoint(tp="sys_enter", fn_name="hello")
 
 while True:
+    d = {}
     sleep(2)
-    s = ""
+    s = "=========================================="
     for k,v in b["counter_table"].items():
-        s += f"ID {k.command.decode()}|{k.call.decode()}: {v.value}\t"
-    print(s)
+        command = k.command.decode()
+        if command not in d:
+            d[command] = {}
+        d[command][k.call.decode()] = v.value
+    print(d)
