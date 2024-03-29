@@ -52,7 +52,7 @@ int kprobe_exec(void *ctx)
 
    // Changing this to <= means and c could have value beyond the bounds of the
    // global message array
-   // if (c <= sizeof(message)) {
+   //if (c <= sizeof(message)) {
    if (c < sizeof(message)) {
       char a = message[c];
       bpf_printk("%c", a);
@@ -78,17 +78,17 @@ int xdp_hello(struct xdp_md *ctx) {
   void *data_end = (void *)(long)ctx->data_end;
 
   // Attempt to read outside the packet
-  // data_end++; 
+  //data_end++; 
 
    // This is a loop that will pass the verifier
    // for (int i=0; i < 10; i++) {
    //    bpf_printk("Looping %d", i);
    // }
 
-   // This is a loop that will fail the verifier
-   // for (int i=0; i < c; i++) {
-   //    bpf_printk("Looping %d", i);
-   // }
+   //This is a loop that will fail the verifier
+   for (int i=0; i < c; i++) {
+      bpf_printk("Looping %d", i);
+   }
 
   // Comment out the next two lines and there won't be a return code defined
   bpf_printk("%x %x", data, data_end);
