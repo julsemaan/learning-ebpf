@@ -8,7 +8,7 @@ BPF_PROG_ARRAY(syscall, 300);
 int hello(struct bpf_raw_tracepoint_args *ctx) {
     int opcode = ctx->args[1];
     syscall.call(ctx, opcode);
-    bpf_trace_printk("Another syscall: %d", opcode);
+    //bpf_trace_printk("Another syscall: %d", opcode);
     return 0;
 }
 
@@ -54,6 +54,12 @@ prog_array[ct.c_int(225)] = ct.c_int(timer_fn.fd)
 prog_array[ct.c_int(226)] = ct.c_int(timer_fn.fd)
 
 # Ignore some syscalls that come up a lot
+prog_array[ct.c_int(1)] = ct.c_int(ignore_fn.fd)
+prog_array[ct.c_int(7)] = ct.c_int(ignore_fn.fd)
+prog_array[ct.c_int(14)] = ct.c_int(ignore_fn.fd)
+prog_array[ct.c_int(16)] = ct.c_int(ignore_fn.fd)
+prog_array[ct.c_int(19)] = ct.c_int(ignore_fn.fd)
+prog_array[ct.c_int(20)] = ct.c_int(ignore_fn.fd)
 prog_array[ct.c_int(21)] = ct.c_int(ignore_fn.fd)
 prog_array[ct.c_int(22)] = ct.c_int(ignore_fn.fd)
 prog_array[ct.c_int(25)] = ct.c_int(ignore_fn.fd)
