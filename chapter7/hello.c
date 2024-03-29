@@ -44,7 +44,7 @@ int main()
 
 	skel = hello_bpf__open_opts(&opts);
 	if (!skel) {
-		printf("Failed to open BPF object\n");
+		printf("Failed to open BPF object 1\n");
 		return 1;
 	}
 
@@ -58,7 +58,7 @@ int main()
 	}
 	
 	if (err) {
-		printf("Failed to load BPF object\n");
+		printf("Failed to load BPF object 2\n");
 		hello_bpf__destroy(skel);
 		return 1;
 	}
