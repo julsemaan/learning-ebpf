@@ -5,13 +5,24 @@
 
 SEC("xdp")
 int ping(struct xdp_md *ctx) {
-    long protocol = lookup_protocol(ctx);
-    if (protocol == 1) // ICMP 
+    long icmp_type = lookup_ping_type(ctx);
+    if (icmp_type == -1) // NOT ICMP
     {
-        bpf_printk("Hello ping");
-        // return XDP_DROP; 
+      bpf_printk("NOT ICMP");
+      return XDP_PASS;
     }
-    return XDP_PASS;
+    else if(icmp_type == 0){
+        bpf_printk("Hello ping echo reply");
+        return XDP_PASS; 
+    }
+    else if(icmp_type == 8){
+        bpf_printk("Hello ping echo");
+        return XDP_PASS; 
+    }
+    else {
+      bpf_printk("%d", icmp_type);
+      return XDP_PASS;
+    }
 }
 
 char LICENSE[] SEC("license") = "Dual BSD/GPL";

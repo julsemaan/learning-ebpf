@@ -41,3 +41,33 @@ unsigned char lookup_protocol(struct xdp_md *ctx)
     }
     return protocol;
 }
+
+long lookup_ping_type(struct xdp_md *ctx)
+{
+    long icmp_type = -1;
+
+    void *data = (void *)(long)ctx->data;
+    void *data_end = (void *)(long)ctx->data_end;
+    struct ethhdr *eth = data;
+    if (data + sizeof(struct ethhdr) > data_end)
+        return -1;
+
+    // Check that it's an IP packet
+    if (bpf_ntohs(eth->h_proto) == ETH_P_IP)
+    {
+        // Return the protocol of this packet
+        // 1 = ICMP
+        // 6 = TCP
+        // 17 = UDP        
+        struct iphdr *iph = data + sizeof(struct ethhdr);
+        if (data + sizeof(struct ethhdr) + sizeof(struct iphdr) <= data_end) {
+          if (iph->protocol == 1) {
+            struct icmphdr *icmph = data + sizeof(struct ethhdr) + sizeof(struct iphdr);
+            if (data + sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct icmphdr) <= data_end) {
+              icmp_type = icmph->type; 
+            }
+          }
+        }
+    }
+    return icmp_type;
+}
