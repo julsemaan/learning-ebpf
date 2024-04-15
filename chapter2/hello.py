@@ -1,15 +1,21 @@
 #!/usr/bin/python3  
 from bcc import BPF
+import sys
 
 program = r"""
-int hello(void *ctx) {
-    bpf_trace_printk("Hello World!");
-    return 0;
+int hello(struct xdp_md *ctx)
+{
+    return XDP_PASS;
 }
 """
 
 b = BPF(text=program)
-syscall = b.get_syscall_fnname("execve")
-b.attach_kprobe(event=syscall, fn_name="hello")
+device = "ens19" #2
+fn = b.load_func("hello", BPF.XDP) #4
+b.attach_xdp(device, fn, 0) #5
 
-b.trace_print()
+while True:
+    sys.stdin.read(1)
+
+b.remove_xdp(device, 0) #11
+

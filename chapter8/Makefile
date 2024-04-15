@@ -8,10 +8,10 @@ all: $(TARGET) $(BPF_OBJ)
 .PHONY: $(TARGET)
 
 $(TARGET): $(BPF_OBJ)
-	bpftool net detach xdp dev lo
+	bpftool net detach xdp dev ens19
 	rm -f /sys/fs/bpf/$(TARGET)
 	bpftool prog load $(BPF_OBJ) /sys/fs/bpf/$(TARGET)
-	bpftool net attach xdp pinned /sys/fs/bpf/$(TARGET) dev lo
+	bpftool net attach xdp pinned /sys/fs/bpf/$(TARGET) dev ens19
 
 $(BPF_OBJ): %.o: %.c vmlinux.h
 	clang \
